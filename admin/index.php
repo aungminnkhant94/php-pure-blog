@@ -49,7 +49,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                       </td>
                       <td>
                         <a class="btn btn-warning"href="edit.php?id=<?php echo $value['id']; ?>">Edit</a>
-                        <a class="btn btn-danger" href="delete.php?id=<?php echo $value['id']; ?>">Delete</a>
+                        <a href="delete.php?id=<?php echo $value['id'] ?>"onclick="return confirm('Are you sure you want o delete this item')" class="btn btn-danger">Delete</a>
                       </td>
                     </tr>
                     <?php
