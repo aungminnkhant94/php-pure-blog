@@ -9,6 +9,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
 if ($_POST) {
   $file = 'images/'.($_FILES['image']['name']);
   $imageType = pathinfo($file,PATHINFO_EXTENSION);
+  
   if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
     echo "<script>
       alert('Image can't insert')
@@ -28,7 +29,7 @@ if ($_POST) {
     );
     if($result) {
       echo "<script>
-        alert('Successfully added')
+          alert('Successfully Updated');window.location.href ='index.php';
       </script>";
     }
   }
@@ -36,9 +37,13 @@ if ($_POST) {
 
 }
 ?>
+
+<!-- header -->
   <?php
     include("header.html");
   ?>
+<!-- end header -->
+
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">

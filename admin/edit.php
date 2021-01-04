@@ -6,43 +6,41 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
   header("Location:login.php");
 }
 
-if($_POST) {
-    $id = $_POST['id'];
-    $title = $_POST['title'];
-    $content = $_POST['content'];
+if ($_POST) {
+  $id = $_POST['id'];
+  $title = $_POST['title'];
+  $content = $_POST['content'];
 
-    if($_FILES['image']['name'] != null) {
-        $file = 'images/'.($_FILES['image']['name']);
-        $imageType = pathinfo($file,PATHINFO_EXTENSION);
+  if ($_FILES ['image']['name'] != null) {
+    $file = 'images/'.($_FILES['image']['name']);
+    $imageType = pathinfo($file,PATHINFO_EXTENSION);
 
-        if ($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
-            echo "<script>
-                alert('Image can't insert')
-            </script>";
-        }
-    else{
-        $image = $_FILES['image']['name'];
-        move_uploaded_file($_FILES['image']['tmp_name'],$file);
+    if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
+      echo "<script>
+        alert('Image can't insert')
+      </script>";
+    }else{
+      $image = $_FILES['image']['name'];
+      move_uploaded_file($_FILES['image']['tmp_name'],$file);
 
-        $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id='$id'");
-        $result = $stmt->execute();
-        if($result) {
-            echo "<script>
-                alert('Successfully Updated')
-            </script>";
-        }
+      $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id='$id' ");
+      $result = $stmt->execute(); 
+      if($result) {
+        echo "<script>
+          alert('Successfully Updated');window.location.href ='index.php';
+        </script>";
+      }
     }
-}else{
-    $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id='$id'");
+   }else{
+    $stmt = $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id='$id' ");
     $result = $stmt->execute();
     if($result) {
-        echo "<script>
-            alert('Successfully Updated');window.location.href ='index.php';
-        </script>";
+      echo "<script>
+        alert('Successfully Updated');window.location.href ='index.php';
+      </script>";
     }
+  }
 }
-}
-
 
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
 $stmt->execute();
