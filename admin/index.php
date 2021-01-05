@@ -19,15 +19,14 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                 <h3 class="card-title">Blog Listings</h3>
               </div>
               <?php 
-              //pagination
                 if(!empty($_GET['pageno'])) {
                   $pageno = $_GET['pageno'];
                 }else{
                   $pageno = 1;
                 }
-                $numOfRecs = 1;
+                
+                $numOfRecs = 3;
                 $offset = ($pageno - 1) * $numOfRecs ;
-              //pagination
 
                 if (empty($_POST['search'])) {
                   $statement = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
@@ -41,7 +40,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                   $result = $stmt->fetchAll();
                 }else{
                   $searchKey = $_POST['search'];
-                  
+
                   $statement = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%searchKey%' ORDER BY id DESC");
                   $statement->execute();
                   $rawresult = $statement->fetchAll(); 
@@ -104,7 +103,9 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                         <a href="" class="page-link"><?php echo $pageno; ?></a>
                       </li>
                       <li class="page-item <?php if($pageno >= $total_pages){echo 'disabled';} ?>">
-                        <a href="<?php if($page >= $total_pages) {echo '#';} else {echo"?pageno=".($pageno + 1);} ?>" 
+                        <a href="<?php 
+                                    if($pageno >= $total_pages) {echo '#';} else {echo"?pageno=".($pageno + 1);} 
+                                 ?>" 
                            class="page-link">Next</a>
                       </li>
                       <li class="page-item">
