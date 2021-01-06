@@ -4,7 +4,7 @@ session_start();
 require "config/config.php";
 
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
-    header("Location: index.php");
+    header("Location: login.php");
 }
 ?>
 <!DOCTYPE html>
@@ -51,6 +51,7 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                            <img src="admin/images/<?php echo $value['image']?>"class="card-img"style="height:200px;">
                         </a>
                     </div>
+
                 </div>
             </div>
             <?php

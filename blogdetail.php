@@ -4,13 +4,37 @@ session_start();
 require "config/config.php";
 
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
-    header("Location: index.php");
+    header("Location: login.php");
 }
+
+$blogId = $_GET['id'];
+$comment = $_POST['comment'];
 
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE id=".$_GET['id']);
 $stmt->execute();
-
 $result = $stmt->fetchAll();
+
+$cmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
+$cmt->execute();
+$cmtresult = $cmt->fetchAll();
+
+//$authorId = $cmtresult[0]['author_id'];
+//$author = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
+//$author->execute();
+//$authorResult = $author->fetchAll();
+
+
+if($_POST) {
+    $stmt = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
+    $result = $stmt->execute(
+        array(':content'=>$comment,
+              ':author_id' => $_SESSION['user_id'],
+              ':post_id' => $blogId)
+    );
+    if($result) {
+        header('Location:blogdetail.php?id='.$blogId);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,13 +57,19 @@ $result = $stmt->fetchAll();
         h1{
             text-align:center;
         }
+        img {
+            width: 600px;
+            height: 1200px;
+            margin: 20px auto;
+            position : relative;
+        }
 
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="card">
-            <div class="body">
+            <div class="card-body">
                 <h1><?php echo $result[0]['title'] ?></h1>
                 <img src="admin/images/<?php echo $result[0]['image']?>"class="card-img">
                 <p class="h3 p-4">
@@ -47,6 +77,41 @@ $result = $stmt->fetchAll();
                         echo $result[0]['content']
                     ?>
                 </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <strong>Comments</strong>
+            </div>
+            <div class="card-footer card-comments">
+                <div class="card-comment">
+                    <div class="comment-text"style="margin-left:0px !important;">
+                        <span class="username">
+
+                            <span class="text-muted float-right">
+                                <?php
+                                    echo $cmtresult[0]['created_at']
+                                ?>
+                            </span>
+                        </span>
+                        <?php
+                            if($cmtresult) {
+                                $i = 1;
+                                foreach ($cmtresult as $value){
+                                    ?>
+                                <?php echo $value['content']; ?>
+                        <?php
+                            $i++;
+                                }
+                            }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <form action=""method="post">
+                    <input name="comment" type="text"class="form-control"placeholder="Press enter to post comment">
+                </form>
             </div>
         </div>
     </div>
