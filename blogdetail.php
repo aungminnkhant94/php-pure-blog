@@ -18,10 +18,11 @@ $cmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
 $cmt->execute();
 $cmtresult = $cmt->fetchAll();
 
-//$authorId = $cmtresult[0]['author_id'];
-//$author = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
-//$author->execute();
-//$authorResult = $author->fetchAll();
+$authorId = $cmtresult[0]['author_id'];
+$author = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
+$author->execute();
+$authorResult = $author->fetchAll();
+
 
 
 if($_POST) {
@@ -79,42 +80,34 @@ if($_POST) {
                 </p>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">
-                <strong>Comments</strong>
-            </div>
-            <div class="card-footer card-comments">
-                <div class="card-comment">
-                    <div class="comment-text"style="margin-left:0px !important;">
-                        <span class="username">
+       <ul class="list-group mb-2">
+            <li class="list-group-item active">
+                 <b>Comments </b>
+            </li>                    
+            <?php
+                if($cmtresult) {
+                    $i = 1;
+                    foreach ($cmtresult as $comment){
+            ?>
+                    <li class="list-group-item">
+                        <?php echo $comment['content'] ?>
+                        <div class="small mt-2">
+                                By <b><?php echo $authorResult[0]['name'] ?></b>,
+                                <?php echo $comment['created_at'] ?>
+                        </div>
+                    </li>
+            <?php
+                $i++;
+                    }
+                }
+            ?>
+        </ul>
 
-                            <span class="text-muted float-right">
-                                <?php
-                                    echo $cmtresult[0]['created_at']
-                                ?>
-                            </span>
-                        </span>
-                        <?php
-                            if($cmtresult) {
-                                $i = 1;
-                                foreach ($cmtresult as $value){
-                                    ?>
-                                <?php echo $value['content']; ?>
-                        <?php
-                            $i++;
-                                }
-                            }
-                        ?>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <form action=""method="post">
-                    <input name="comment" type="text"class="form-control"placeholder="Press enter to post comment">
-                </form>
-            </div>
-        </div>
+        <form action=""method="post">
+                <input name="comment" type="text"class="form-control"placeholder="Press enter to post comment">
+        </form>
     </div>
+    
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>
