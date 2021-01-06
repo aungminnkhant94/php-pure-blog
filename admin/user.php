@@ -5,9 +5,6 @@ require "../config/config.php";
 if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
   header("Location:login.php");
 }
-if($_SESSION['role'] != 1 ) {
-  header ("Location:login.php");
-}
 ?>
   <?php
     include("header.php");
@@ -19,7 +16,7 @@ if($_SESSION['role'] != 1 ) {
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Blog Listings</h3>
+                <h3 class="card-title">Users Listings</h3>
               </div>
               <?php 
                 if(!empty($_GET['pageno'])) {
@@ -31,39 +28,27 @@ if($_SESSION['role'] != 1 ) {
                 $numOfRecs = 3;
                 $offset = ($pageno - 1) * $numOfRecs ;
 
-                if (empty($_POST['search'])) {
-                  $statement = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+                  $statement = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
                   $statement->execute();
                   $rawresult = $statement->fetchAll(); 
 
                   $total_pages = ceil(count($rawresult)/$numOfRecs);
 
-                  $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$numOfRecs");
+                  $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset,$numOfRecs");
                   $stmt->execute();
                   $result = $stmt->fetchAll();
-                }else{
-                  $searchKey = $_POST['search'];
 
-                  $statement = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%searchKey%' ORDER BY id DESC");
-                  $statement->execute();
-                  $rawresult = $statement->fetchAll(); 
-
-                  $total_pages = ceil(count($rawresult)/$numOfRecs);
-
-                  $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%searchKey%' ORDER BY id DESC LIMIT $offset,$numOfRecs");
-                  $stmt->execute();
-                  $result = $stmt->fetchAll();
-                }
               ?>
               <!-- /.card-header -->
               <div class="card-body">
-                <a href="add.php" class="btn btn-success mb-3">Create New Blog</a>
+                <a href="add_user.php" class="btn btn-success mb-3">Create New User</a>
                 <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th style="width: 10px">ID</th>
-                      <th style="width: 200px">Title</th>
-                      <th>Content</th>
+                      <th style="width: 200px">Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
                       <th style="width: 200px">Actions</th>
                     </tr>
                   </thead>
@@ -75,9 +60,18 @@ if($_SESSION['role'] != 1 ) {
                     ?>
                     <tr>
                       <td><?php echo $i; ?></td>
-                      <td><?php echo $value['title'] ?></td>
+                      <td><?php echo $value['name'] ?></td>
                       <td>
-                          <?php echo substr($value['content'],0,150) ?>
+                          <?php echo substr($value['email'],0,150) ?>
+                      </td>
+                      <td>
+                          <?php
+                            if($value['role'] == 1) {
+                                echo "Admin";
+                            }else{
+                                echo "User";
+                            }
+                          ?>
                       </td>
                       <td>
                         <a class="btn btn-warning"href="edit.php?id=<?php echo $value['id']; ?>">Edit</a>

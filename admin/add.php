@@ -40,7 +40,7 @@ if ($_POST) {
 
 <!-- header -->
   <?php
-    include("header.html");
+    include("header.php");
   ?>
 <!-- end header -->
 

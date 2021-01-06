@@ -89,6 +89,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
            
               </p>
             </a>
+            <a href="user.php" class="nav-link ">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                
+                Users 
+           
+              </p>
+            </a>
           </li>
         </ul>
       </nav>

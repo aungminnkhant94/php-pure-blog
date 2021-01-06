@@ -23,8 +23,6 @@ $author = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
 $author->execute();
 $authorResult = $author->fetchAll();
 
-
-
 if($_POST) {
     $stmt = $pdo->prepare("INSERT INTO comments(content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
     $result = $stmt->execute(
