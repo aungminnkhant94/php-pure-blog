@@ -7,7 +7,19 @@ if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
 }
 
 if ($_POST) {
-  $file = 'images/'.($_FILES['image']['name']);
+  if (empty($_POST['title']) || empty($_POST['content']) || empty($_FILES['image'])) {
+    if (empty($_POST['title'])) {
+      $titleError = "Title cannot be null";
+    }
+    if (empty($_POST['content'])) {
+      $contentError = "Content cannot be null";
+    }
+    if (empty($_FILES['image'])) {
+      $imageError = "Image cannot be null";
+    }
+  }
+}else{
+  $file = 'images/'.($_FILES['image']['name']); 
   $imageType = pathinfo($file,PATHINFO_EXTENSION);
   
   if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
@@ -15,7 +27,7 @@ if ($_POST) {
       alert('Image can't insert')
     </script>";
   }else{
-    $title = $_POST['title'];
+    $title = $_POST['title']; 
     $content = $_POST['content'];
     $image = $_FILES['image']['name'];
     move_uploaded_file($_FILES['image']['tmp_name'],$file);
@@ -33,9 +45,8 @@ if ($_POST) {
       </script>";
     }
   }
-}else{
-
 }
+
 ?>
 
 <!-- header -->
@@ -54,14 +65,17 @@ if ($_POST) {
               <form action="add.php"method="post"enctype="multipart/form-data">
                   <div class="form-group">
                     <label for="title">Title</label>
+                    <p style="color:red"><?php echo empty($titleError) ? '' : '*'.$titleError; ?></p>
                     <input type="text"class="form-control"name="title">
                   </div>
                   <div class="form-group">
                     <label for="content">Content</label>
+                    <p style="color:red"><?php echo empty($contentError) ? '' : '*'.$contentError; ?></p>
                     <textarea name="content"class="form-control"></textarea>
                   </div>
                   <div class="form-group">
                     <label for="image">Image</label>
+                    <p style="color:red"><?php echo empty($imageError) ? '' : '*'.$imageError; ?></p>
                     <input type="file"name="image">
                   </div>
                   <div class="form-group">
